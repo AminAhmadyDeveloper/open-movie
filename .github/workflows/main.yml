@@ -2,18 +2,43 @@ name: Build and Deploy
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
   workflow_dispatch:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v3
 
-    - name: Build and Deploy React app to GitHub Pages
-      uses: omkartapale/react-deployment-gh-pages@v1.0.0
+    steps:
+      # 1. Checkout repo
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      # 2. Setup Node
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Build app (inject env variables here)
+      - name: Build project
+        run: npm run build
+        env:
+          NODE_ENV: production
+          # 🔒 secrets from GitHub (add them in repo → Settings → Secrets → Actions)
+          VITE_PUBLIC_TMDB_API_BASE_URL: ${{ secrets.VITE_PUBLIC_TMDB_API_BASE_URL }}
+          VITE_PUBLIC_TMDB_API_KEY: ${{ secrets.VITE_PUBLIC_TMDB_API_KEY }}
+
+      # 5. Deploy to gh-pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./dist
