@@ -20,11 +20,11 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 24.9.0
 
       # 3. Install dependencies
       - name: Install dependencies
-        run: npm i
+        run: npm ci
 
       # 4. Build app (inject env variables here)
       - name: Build project
