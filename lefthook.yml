@@ -1,0 +1,9 @@
+commit-msg:
+  jobs:
+    - run: npm run commitlint
+pre-commit:
+  jobs:
+    - run: npm run lint-staged
+pre-push:
+  jobs:
+    - run: npm run build

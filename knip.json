@@ -1,0 +1,18 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "ignore": [
+    "public/*.*",
+    "emails/*.*",
+    "**/*.config.*",
+    "**/*.*rc",
+    "coverage/*"
+  ],
+  "ignoreDependencies": [
+    "eslint-config-next",
+    "eslint-config-prettier",
+    "eslint-plugin-drizzle",
+    "eslint-plugin-prettier",
+    "schema-dts"
+  ],
+  "ignoreExportsUsedInFile": true
+}

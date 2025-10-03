@@ -1,0 +1,38 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/styles/tailwind.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/libraries/tailwind-utilities",
+    "ui": "@/components/ui",
+    "lib": "@/libraries",
+    "hooks": "@/hooks"
+  },
+  "registries": {
+    "@evil-charts": "https://evilcharts.com/chart/{name}.json",
+    "@lina": "https://lina.sameer.sh/r/{name}.json",
+    "@tiptap": "https://tiptap.niazmorshed.dev/r/{name}.json",
+    "@re-ui": "https://reui.io/r/{name}.json",
+    "@ncdai": "https://chanhdai.com/r/{name}.json",
+    "@molecule": "https://moleculeui.design/r/{name}.json",
+    "@data-command": "https://data-command.davidsling.in/r/{name}.json",
+    "@stateful-button": "https://stateful-button.vercel.app/r/{name}.json",
+    "@dropdrawer": "https://dropdrawer.jiaweing.com/r/{name}.json",
+    "@stories": "https://registry.lloydrichards.dev/registry/{name}",
+    "@cookie": "http://shadcn-cookies.vercel.app/r/{name}.json",
+    "@spinner": "https://shadcn-spinner.vercel.app/api/r/{name}",
+    "@kibo": "https://www.kibo-ui.com/r/{name}.json",
+    "@bits": "https://reactbits.dev/r/{name}.json",
+    "@amin": "https://aminahmady.vercel.app/r/{name}.json"
+  }
+}
