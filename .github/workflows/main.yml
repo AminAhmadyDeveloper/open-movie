@@ -24,7 +24,7 @@ jobs:
 
       # 3. Install dependencies
       - name: Install dependencies
-        run: npm ci
+        run: npm i
 
       # 4. Build app (inject env variables here)
       - name: Build project
