@@ -28,6 +28,7 @@ export const HorizontalMovieCard: FC<HorizontalMovieCardProps> = ({
   overview,
   posterPath,
   title,
+  type,
   voteAverage,
 }) => {
   return (
@@ -54,7 +55,7 @@ export const HorizontalMovieCard: FC<HorizontalMovieCardProps> = ({
         </CardDescription>
         <CardAction className="mt-4 w-full">
           <Button asChild className="w-full">
-            <Link to={`/movie/${id}`}>
+            <Link to={`/${type === 'show' ? 'tv-show' : 'movie'}/${id}`}>
               <PlaySquareIcon className="size-5" />
               دانلود و تماشا
             </Link>

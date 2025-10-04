@@ -7,6 +7,7 @@ import { MainLayout } from '@/layouts/main-layout';
 const HomePage = lazy(() => import('@/pages/home/home-page'));
 const AboutPage = lazy(() => import('@/pages/about/about-page'));
 const MoviePage = lazy(() => import('@/pages/movie/movie-page'));
+const TvShowPage = lazy(() => import('@/pages/tv-show/tv-show-page'));
 
 const router = createBrowserRouter(
   [
@@ -23,6 +24,10 @@ const router = createBrowserRouter(
         {
           element: <MoviePage />,
           path: 'movie/:movieId',
+        },
+        {
+          element: <TvShowPage />,
+          path: 'tv-show/:tvShowId',
         },
       ],
       element: <MainLayout />,

@@ -26,6 +26,7 @@ export const VerticalMovieCard: FC<VerticalMovieCardProps> = ({
   overview,
   posterPath,
   title,
+  type,
 }) => {
   return (
     <Card className="group relative h-[calc(var(--spacing)*128)] w-full overflow-hidden p-0 lg:h-[calc(var(--spacing)*110)]">
@@ -43,7 +44,7 @@ export const VerticalMovieCard: FC<VerticalMovieCardProps> = ({
         </CardDescription>
         <CardAction className="mt-4 w-full">
           <Button asChild className="w-full">
-            <Link to={`/movie/${id}`}>
+            <Link to={`/${type === 'show' ? 'tv-show' : 'movie'}/${id}`}>
               <PlaySquareIcon className="size-5" />
               دانلود و تماشا
             </Link>

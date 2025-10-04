@@ -5,6 +5,7 @@ import { ScreenLoading } from '@/components/ui/screen-loading';
 import { MoviesList } from '@/pages/home/components/movies-list';
 import { Slider } from '@/pages/home/components/slider';
 import { TrendingMovieWeekSlider } from '@/pages/home/components/trending-movie-week-slider';
+import { TVList } from '@/pages/home/components/tv-list';
 
 const HomePage: FC = () => {
   return (
@@ -15,6 +16,7 @@ const HomePage: FC = () => {
           <h2 className="block p-4 pb-2 font-bold md:hidden">آخرین فیلم ها</h2>
           <TrendingMovieWeekSlider />
           <MoviesList />
+          <TVList />
         </Suspense>
       </ErrorBoundary>
     </main>
