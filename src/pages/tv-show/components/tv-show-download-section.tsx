@@ -2,9 +2,20 @@ import { DownloadCloudIcon } from 'lucide-react';
 import { type FC, useMemo } from 'react';
 import { Link } from 'react-router';
 
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { For } from '@/components/utilities/for';
+import { Show } from '@/components/utilities/show';
+import { Case, Default, Switch } from '@/components/utilities/switch-case';
+import { type Season, useAlmasMovieData } from '@/hooks/use-almas-data';
+import { slugify } from '@/libraries/string-utilities';
 import type { TvShowDetailsResponseSchema } from '@/queries/tv';
 
 interface TvShowDownloadSectionProps {
@@ -77,42 +88,147 @@ export const TvShowDownloadSection: FC<TvShowDownloadSectionProps> = ({
     return result as any;
   }, [tvShowDetails.external_ids.imdb_id, tvShowDetails.seasons.length]);
 
+  const moviePath = useMemo(() => {
+    const path = slugify(`${tvShowDetails?.original_name}`);
+    return `https://almasmovie.website/series/${path}`;
+  }, [tvShowDetails?.original_name]);
+
+  const { data: movieLinks, loading } = useAlmasMovieData(moviePath);
+
   return (
     <div>
       <Badge>لینک های دانلود (الماس مووی)</Badge>
-      <div className="mt-2">
-        <For each={links.seasons}>
-          {(season, seasonIndex) => {
-            return (
-              <div
-                className="relative mt-5 grid w-full grid-cols-2 gap-2 rounded-xl border border-dashed p-4 xl:grid-cols-4"
-                key={season.season}
-              >
-                <Badge className="absolute -top-3 right-0">
-                  فصل {seasonIndex + 1}
-                </Badge>
-                <For each={season.qualities}>
-                  {(quality, qualityIndex) => {
+      <div className="mt-2 grid w-full grid-cols-1 gap-4">
+        <Switch value={loading}>
+          <Case value>
+            <For each={[1, 2, 3]}>
+              {(link) => {
+                return (
+                  <Skeleton
+                    className="h-11 w-full"
+                    key={`download-link-loading-${link}`}
+                  />
+                );
+              }}
+            </For>
+          </Case>
+          <Default>
+            <Switch value={!!movieLinks?.result?.length}>
+              <Case value>
+                <For each={movieLinks?.result as Season[]}>
+                  {(link) => {
                     return (
-                      <Button
-                        asChild
-                        className="h-11 w-full"
-                        key={quality.link}
-                        size="lg"
-                        variant={seasonIndex === 0 ? 'default' : 'destructive'}
+                      <Accordion
+                        collapsible
+                        key={`download-link-trigger-${link.season}`}
+                        type="single"
                       >
-                        <Link target="_blank" to={quality.link}>
-                          <DownloadCloudIcon />
-                          کیفیت {qualityIndex + 1}
-                        </Link>
-                      </Button>
+                        <AccordionItem value="item-1">
+                          <AccordionTrigger className="flex h-11 w-full items-center justify-between border bg-secondary px-2 data-[state=open]:!rounded-b-none">
+                            <div className="flex items-center gap-x-3">
+                              <span>فصل {link.season}</span>
+                            </div>
+                          </AccordionTrigger>
+                          <AccordionContent
+                            asChild
+                            className="rounded-xl !rounded-t-none border !border-t-0 bg-secondary p-2"
+                            key={`download-link-content-${link.season}`}
+                          >
+                            <div className="grid gap-2 xl:grid-cols-2">
+                              <For each={link.qualities}>
+                                {(quality) => {
+                                  return (
+                                    <Button
+                                      asChild
+                                      className="h-11 w-full"
+                                      size="lg"
+                                    >
+                                      <Link
+                                        target="_blank"
+                                        to={quality.downloadLink || ''}
+                                      >
+                                        <DownloadCloudIcon />
+                                        برو به دانلود {quality.info?.quality.fa}
+                                        <Show on={quality.info?.x265}>
+                                          {() => {
+                                            return (
+                                              <Badge variant="secondary">
+                                                x265
+                                              </Badge>
+                                            );
+                                          }}
+                                        </Show>
+                                        <Show on={quality.info?.dubbed}>
+                                          {() => {
+                                            return (
+                                              <Badge variant="secondary">
+                                                دوبله فارسی
+                                              </Badge>
+                                            );
+                                          }}
+                                        </Show>
+                                        <Show
+                                          on={
+                                            quality.info?.encoder !== 'نامشخص'
+                                          }
+                                        >
+                                          {() => {
+                                            return (
+                                              <Badge variant="secondary">
+                                                انکودر: {quality.info?.encoder}
+                                              </Badge>
+                                            );
+                                          }}
+                                        </Show>
+                                      </Link>
+                                    </Button>
+                                  );
+                                }}
+                              </For>
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
                     );
                   }}
                 </For>
-              </div>
-            );
-          }}
-        </For>
+              </Case>
+              <Default>
+                <For each={links.seasons}>
+                  {(season, seasonIndex) => {
+                    return (
+                      <div
+                        className="relative mt-5 grid w-full grid-cols-2 gap-2 rounded-xl border border-dashed p-4 xl:grid-cols-4"
+                        key={season.season}
+                      >
+                        <Badge className="absolute -top-3 right-0">
+                          فصل {seasonIndex + 1}
+                        </Badge>
+                        <For each={season.qualities}>
+                          {(quality, qualityIndex) => {
+                            return (
+                              <Button
+                                asChild
+                                className="h-11 w-full"
+                                key={quality.link}
+                                size="lg"
+                              >
+                                <Link target="_blank" to={quality.link}>
+                                  <DownloadCloudIcon />
+                                  کیفیت {qualityIndex + 1}
+                                </Link>
+                              </Button>
+                            );
+                          }}
+                        </For>
+                      </div>
+                    );
+                  }}
+                </For>
+              </Default>
+            </Switch>
+          </Default>
+        </Switch>
       </div>
       <Button
         asChild

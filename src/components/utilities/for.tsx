@@ -2,7 +2,7 @@ import { Fragment, type ReactElement, type ReactNode } from 'react';
 
 interface ForProps<GEach> {
   children: (item: GEach, index: number) => ReactNode;
-  each: readonly GEach[] | undefined;
+  each: null | readonly GEach[] | undefined;
   fallback?: ReactNode;
 }
 
