@@ -1,7 +1,7 @@
-import { createFetch, createSchema } from '@better-fetch/fetch';
-import { logger } from '@better-fetch/logger';
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { z } from 'zod/v4';
+
+import { proxiedUrl } from '@/libraries/string-utilities';
 
 export const tvResponseSchema = z.object({
   page: z.number(),
@@ -151,62 +151,28 @@ export type TvShowDetailsResponseSchema = z.infer<
   typeof tvShowDetailsResponseSchema
 >;
 
-const $fetch = createFetch({
-  baseURL: import.meta.env.VITE_PUBLIC_TMDB_API_BASE_URL,
-  plugins: [logger()],
-  schema: createSchema({
-    '@get/trending/tv/week': {
-      query: z.object({
-        api_key: z.string(),
-        language: z.enum(['fa']),
-      }),
-    },
-    '@get/tv/:tv_id': {
-      params: z.object({
-        tv_id: z.string().or(z.number()),
-      }),
-      query: z.object({
-        api_key: z.string(),
-        append_to_response: z.string().or(z.number()),
-        language: z.enum(['fa']),
-      }),
-    },
-  }),
-});
-
 export const tv = createQueryKeys('tv', {
   all: {
-    queryFn: () => {
-      return $fetch<TvResponseSchema>('@get/trending/tv/week', {
-        headers: {
-          'cache-control': 'no-cache',
-        },
-        query: {
-          api_key: import.meta.env.VITE_PUBLIC_TMDB_API_KEY,
-          language: 'fa',
-        },
-      });
+    queryFn: async () => {
+      const response = await fetch(
+        proxiedUrl('/trending/tv/week', { language: 'fa' }),
+      );
+      return (await response.json()) as TvResponseSchema;
     },
     queryKey: ['trending', 'tv', 'week'],
   },
-  details: (tvId: string | undefined) => {
+  details: (tvId: string | undefined, language: 'en' | 'fa') => {
     return {
-      queryFn: () => {
-        return $fetch<TvShowDetailsResponseSchema>('@get/tv/:tv_id', {
-          headers: {
-            'cache-control': 'no-cache',
-          },
-          params: {
-            tv_id: tvId || '',
-          },
-          query: {
-            api_key: import.meta.env.VITE_PUBLIC_TMDB_API_KEY,
+      queryFn: async () => {
+        const response = await fetch(
+          proxiedUrl(`/tv/${tvId}`, {
             append_to_response: 'external_ids,videos,backdrop_path',
-            language: 'fa',
-          },
-        });
+            language: language,
+          }),
+        );
+        return (await response.json()) as TvShowDetailsResponseSchema;
       },
-      queryKey: ['tv', 'details', tvId],
+      queryKey: ['tv', 'details', tvId, language],
     };
   },
 });

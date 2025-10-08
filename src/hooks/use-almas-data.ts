@@ -20,7 +20,7 @@ export type Season = {
   season: number;
 };
 
-const CORS_PROXY = 'https://corsproxy.io/?';
+const CORS_PROXY = import.meta.env.VITE_PUBLIC_CORS_PROXY_BASE_URL;
 const DEFAULT_TIMEOUT_MS = 15_000;
 
 export function useAlmasMovieData(url: string) {

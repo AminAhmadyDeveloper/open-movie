@@ -5,12 +5,10 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { Badge } from '@/components/ui/badge';
 import { Show } from '@/components/utilities/show';
 import type { MovieDetailsResponseSchema } from '@/queries/movies';
-import type { AllVideosResponseSchema } from '@/queries/videos';
 import { $image } from '@/services/image-service';
 
 interface FilmHeroSectionProps {
   movieDetails: MovieDetailsResponseSchema;
-  videos: AllVideosResponseSchema | null | undefined;
 }
 
 export const FilmHeroSection: FC<FilmHeroSectionProps> = ({ movieDetails }) => {

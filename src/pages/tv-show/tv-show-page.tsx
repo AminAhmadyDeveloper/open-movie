@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQueries } from '@tanstack/react-query';
 import { useParams } from 'react-router';
 
 import { ScreenLoading } from '@/components/ui/screen-loading';
@@ -11,32 +11,45 @@ import { queries } from '@/queries';
 const TVShowPage = () => {
   const { tvShowId } = useParams<{ tvShowId: string }>();
 
-  const tvShowDetailsQuery = useQuery({
-    ...queries.tv['details'](tvShowId),
-    enabled: !!tvShowId,
+  const [tvShowDetailsQuery, tvShowEnglishDetailsQuery] = useQueries({
+    queries: [
+      {
+        ...queries.tv['details'](tvShowId, 'fa'),
+        enabled: !!tvShowId,
+      },
+      {
+        ...queries.tv['details'](tvShowId, 'en'),
+        enabled: !!tvShowId,
+      },
+    ],
   });
 
-  if (tvShowDetailsQuery.isFetching) {
+  if (tvShowDetailsQuery.isFetching || tvShowEnglishDetailsQuery.isFetching) {
     return <ScreenLoading />;
   }
 
   return (
     <main>
-      <Show on={tvShowDetailsQuery.data?.data}>
+      <Show on={tvShowDetailsQuery.data}>
         {(tvShowDetails) => {
           return <TvShowHeroSection tvShowDetails={tvShowDetails} />;
         }}
       </Show>
       <div className="relative container -mt-24 grid grid-cols-1 pt-5 md:mt-0 md:grid-cols-2 xl:grid-cols-5">
         <div className="p-4 md:col-span-1 xl:col-span-3">
-          <Show on={tvShowDetailsQuery.data?.data}>
+          <Show on={tvShowDetailsQuery.data}>
             {(tvShowDetails) => {
-              return <TvShowDownloadSection tvShowDetails={tvShowDetails} />;
+              return (
+                <TvShowDownloadSection
+                  englishName={tvShowEnglishDetailsQuery.data?.name}
+                  tvShowDetails={tvShowDetails}
+                />
+              );
             }}
           </Show>
         </div>
         <div className="p-4 md:col-span-1 xl:col-span-2">
-          <Show on={tvShowDetailsQuery.data?.data}>
+          <Show on={tvShowDetailsQuery.data}>
             {(tvShowDetails) => {
               return <TvShowInformation tvShowDetails={tvShowDetails} />;
             }}

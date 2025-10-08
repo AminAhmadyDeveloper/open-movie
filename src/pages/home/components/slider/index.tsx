@@ -18,11 +18,11 @@ export const Slider: FC = () => {
 
   const sliderMovies = useMemo(
     () =>
-      sliderMoviesQuery.data?.data?.results
+      sliderMoviesQuery.data?.results
         .filter((movie) => !!movie.overview)
         .filter((movie) => !!movie.backdrop_path)
         .slice(0, 6) || [],
-    [sliderMoviesQuery.data?.data?.results],
+    [sliderMoviesQuery.data?.results],
   );
 
   const sliderMoviesImagesQueries = useQueries({

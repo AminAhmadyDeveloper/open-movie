@@ -26,7 +26,7 @@ export const TrendingMovieWeekSlider = () => {
       dir="rtl"
     >
       <CarouselMainContainer className="bg-transparent">
-        <For each={trendingMovieWeekQuery.data?.data?.results}>
+        <For each={trendingMovieWeekQuery.data?.results}>
           {(movie) => {
             return (
               <SliderMainItem
@@ -49,7 +49,7 @@ export const TrendingMovieWeekSlider = () => {
         <CarouselThumbsContainer className="gap-x-1">
           <For
             each={Array.from({
-              length: trendingMovieWeekQuery.data?.data?.results.length || 0,
+              length: trendingMovieWeekQuery.data?.results.length || 0,
             })}
           >
             {(_, index) => <CarouselIndicator index={index} key={index} />}

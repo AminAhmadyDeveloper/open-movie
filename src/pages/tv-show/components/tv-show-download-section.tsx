@@ -19,10 +19,12 @@ import { slugify } from '@/libraries/string-utilities';
 import type { TvShowDetailsResponseSchema } from '@/queries/tv';
 
 interface TvShowDownloadSectionProps {
+  englishName: string | undefined;
   tvShowDetails: TvShowDetailsResponseSchema;
 }
 
 export const TvShowDownloadSection: FC<TvShowDownloadSectionProps> = ({
+  englishName,
   tvShowDetails,
 }) => {
   const links = useMemo<{
@@ -89,9 +91,9 @@ export const TvShowDownloadSection: FC<TvShowDownloadSectionProps> = ({
   }, [tvShowDetails.external_ids.imdb_id, tvShowDetails.seasons.length]);
 
   const moviePath = useMemo(() => {
-    const path = slugify(`${tvShowDetails?.original_name}`);
+    const path = slugify(`${englishName}`);
     return `https://almasmovie.website/series/${path}`;
-  }, [tvShowDetails?.original_name]);
+  }, [englishName]);
 
   const { data: movieLinks, loading } = useAlmasMovieData(moviePath);
 

@@ -1,7 +1,7 @@
-import { createFetch, createSchema } from '@better-fetch/fetch';
-import { logger } from '@better-fetch/logger';
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { z } from 'zod/v4';
+
+import { proxiedUrl } from '@/libraries/string-utilities';
 
 export const movieSchema = z.object({
   adult: z.boolean(),
@@ -79,63 +79,25 @@ export type MovieDetailsResponseSchema = z.infer<
   typeof movieDetailsResponseSchema
 >;
 
-const $fetch = createFetch({
-  baseURL: import.meta.env.VITE_PUBLIC_TMDB_API_BASE_URL,
-  plugins: [logger()],
-  schema: createSchema({
-    '@get/movie/:movie_id': {
-      params: z.object({
-        movie_id: z.string().or(z.number()),
-      }),
-      query: z.object({
-        api_key: z.string(),
-        language: z.enum(['fa']),
-      }),
-    },
-    '@get/trending/movie/week': {
-      query: z.object({
-        api_key: z.string(),
-        language: z.enum(['fa']),
-      }),
-    },
-  }),
-});
-
 export const movies = createQueryKeys('movies', {
   all: {
-    queryFn: () => {
-      return $fetch<TrendingMovieWeekResponseSchema>(
-        '@get/trending/movie/week',
-        {
-          headers: {
-            'cache-control': 'no-cache',
-          },
-          query: {
-            api_key: import.meta.env.VITE_PUBLIC_TMDB_API_KEY,
-            language: 'fa',
-          },
-        },
+    queryFn: async () => {
+      const response = await fetch(
+        proxiedUrl('/trending/movie/week', { language: 'fa' }),
       );
+      return (await response.json()) as TrendingMovieWeekResponseSchema;
     },
     queryKey: ['trending', 'movies', 'week'],
   },
-  details: (movieId: string | undefined) => {
+  details: (movieId: string | undefined, language: 'en' | 'fa') => {
     return {
-      queryFn: () => {
-        return $fetch<MovieDetailsResponseSchema>('@get/movie/:movie_id', {
-          headers: {
-            'cache-control': 'no-cache',
-          },
-          params: {
-            movie_id: movieId || '',
-          },
-          query: {
-            api_key: import.meta.env.VITE_PUBLIC_TMDB_API_KEY,
-            language: 'fa',
-          },
-        });
+      queryFn: async () => {
+        const response = await fetch(
+          proxiedUrl(`/movie/${movieId}`, { language: language }),
+        );
+        return (await response.json()) as MovieDetailsResponseSchema;
       },
-      queryKey: ['movie', movieId, 'details'],
+      queryKey: ['movie', movieId, 'details', language],
     };
   },
 });

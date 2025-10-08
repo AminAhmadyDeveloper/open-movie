@@ -14,3 +14,17 @@ export function slugify(input: string): string {
     .replaceAll(/-+/g, '-') // collapse multiple dashes
     .replaceAll(/^-|-$/g, ''); // trim leading/trailing dashes
 }
+
+export const proxiedUrl = (path: string, params = {}) => {
+  const url = new URL(import.meta.env.VITE_PUBLIC_TMDB_API_BASE_URL + path);
+
+  url.searchParams.set('api_key', import.meta.env.VITE_PUBLIC_TMDB_API_KEY);
+
+  for (const [k, v] of Object.entries(params)) {
+    url.searchParams.set(k, v as string);
+  }
+
+  const proxied = 'https://corsproxy.io/?' + encodeURIComponent(url.toString());
+
+  return proxied;
+};

@@ -20,10 +20,12 @@ import { cn } from '@/libraries/tailwind-utilities';
 import type { MovieDetailsResponseSchema } from '@/queries/movies';
 
 interface FilmDownloadSectionProps {
+  englishTitle: string | undefined;
   movieDetails: MovieDetailsResponseSchema;
 }
 
 export const FilmDownloadSection: FC<FilmDownloadSectionProps> = ({
+  englishTitle,
   movieDetails,
 }) => {
   const linkGenerationData = useMemo(() => {
@@ -60,9 +62,9 @@ export const FilmDownloadSection: FC<FilmDownloadSectionProps> = ({
   ]);
 
   const moviePath = useMemo(() => {
-    const path = slugify(`${movieDetails?.original_title}`);
+    const path = slugify(`${englishTitle}`);
     return `https://almasmovie.website/film/${path}-${movieDetails?.release_date.split('-')[0]}`;
-  }, [movieDetails?.original_title, movieDetails?.release_date]);
+  }, [englishTitle, movieDetails?.release_date]);
 
   const { data: movieLinks, loading } = useAlmasMovieData(moviePath);
 
