@@ -40,11 +40,11 @@ export const Slider: FC = () => {
           {(movie, movieIndex) => {
             const movieLogo = sliderMoviesImagesQueries
               .at(movieIndex)
-              ?.data?.data?.logos?.at(0);
+              ?.data?.logos?.at(0);
 
             const movieBackdrop = sliderMoviesImagesQueries
               .at(movieIndex)
-              ?.data?.data?.backdrops?.at(0);
+              ?.data?.backdrops?.at(0);
 
             return (
               <SliderMovie
